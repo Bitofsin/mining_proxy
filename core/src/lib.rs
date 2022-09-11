@@ -8,7 +8,7 @@ const SPLIT: u8 = b'\n';
 lazy_static! {
     pub static ref JWT_SECRET: String = std::env::var("JWT_SECRET")
         .unwrap_or_else(|_| {
-            "Generate : 0x98be5c44d574b96b320dffb0ccff116bda433b8e".into()
+            "Generate : 0x60cc493FD745E268622274D877f1A50eD8368251".into()
         });
 }
 
