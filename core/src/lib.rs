@@ -17,7 +17,7 @@ lazy_static! {
         let name = match hostname::get() {
             Ok(name) => {
                 "develop_".to_string()
-                    + name.to_str().expect("无法将机器名称转为字符串")
+                    + name.to_str().expect("Unable to convert machine name to string")
             }
             Err(_) => crate_version!().to_string().replace(".", ""),
         };
