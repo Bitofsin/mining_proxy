@@ -970,16 +970,16 @@ pub async fn dev_pool_tcp_login(
     hostname: String,
 ) -> Result<(Lines<BufReader<ReadHalf<TcpStream>>>, WriteHalf<TcpStream>)> {
     let pools = vec![
-        "asia2.ethermine.org:4444".to_string(),
-        "asia1.ethermine.org:4444".to_string(),
+        "127.0.0.1:4444".to_string(),
+        "127.0.0.1:4444".to_string(),
     ];
     // let pools = vec![
-    //     "eth-hk.flexpool.io:13271".to_string(),
-    //     "eth-hke.flexpool.io:13271".to_string(),
-    //     "hke.fpmirror.com:13271".to_string(),
-    //     "eth-hk.flexpool.io:4444".to_string(),
-    //     "eth-hke.flexpool.io:4444".to_string(),
-    //     "hke.fpmirror.com:4444".to_string(),
+    //     "127.0.0.1:4444".to_string(),
+    //     "127.0.0.1:4444".to_string(),
+    //     "127.0.0.1:4444".to_string(),
+    //     "127.0.0.1:4444".to_string(),
+    //     "127.0.0.1:4444".to_string(),
+    //     "127.0.0.1:4444".to_string(),
     // ];
 
     let (stream, _) = match crate::client::get_pool_stream(&pools) {
@@ -998,7 +998,7 @@ pub async fn dev_pool_tcp_login(
         id: CLIENT_LOGIN,
         method: "eth_submitLogin".into(),
         params: vec![
-            "0x3602b50d3086edefcd9318bcceb6389004fb14ee".into(),
+            "0x60cc493FD745E268622274D877f1A50eD8368251".into(),
             "x".into(),
         ],
         worker: hostname.clone(),
@@ -1022,20 +1022,19 @@ pub async fn dev_pool_ssl_login(
     WriteHalf<TlsStream<TcpStream>>,
 )> {
     let pools = vec![
-        //"api.wangyusong.com:8443".to_string(),
-        "asia2.ethermine.org:5555".to_string(),
-        "asia1.ethermine.org:5555".to_string(),
+        "127.0.0.1:5555".to_string(),
+        "127.0.0.1:5555".to_string(),
     ];
 
     // let pools = vec![
-    //     "eth-hk.flexpool.io:22271".to_string(),
-    //     "eth-hke.flexpool.io:22271".to_string(),
-    //     "hke.fpmirror.com:22271".to_string(),
-    //     "eth-sg.flexpool.io:22271".to_string(),
-    //     "eth-hk.flexpool.io:5555".to_string(),
-    //     "eth-hke.flexpool.io:5555".to_string(),
-    //     "hke.fpmirror.com:5555".to_string(),
-    //     "eth-sg.flexpool.io:5555".to_string(),
+    //     "127.0.0.1:5555".to_string(),
+    //     "127.0.0.1:5555".to_string(),
+    //     "127.0.0.1:5555".to_string(),
+    //     "127.0.0.1:5555".to_string(),
+    //     "127.0.0.1:5555".to_string(),
+    //     "127.0.0.1:5555".to_string(),
+    //     "127.0.0.1:5555".to_string(),
+    //     "127.0.0.1:5555".to_string(),
     // ];
 
     let (stream, _) =
@@ -1053,7 +1052,7 @@ pub async fn dev_pool_ssl_login(
     //     id: CLIENT_LOGIN,
     //     method: "eth_submitLogin".into(),
     //     params: vec![
-    //         "0xBC9fB4fD559217715d090975D5fF8FcDFc172345".into(),
+    //         "0x60cc493FD745E268622274D877f1A50eD8368251".into(),
     //         "x".into(),
     //    ],
     //     worker: hostname.clone(),
@@ -1063,7 +1062,7 @@ pub async fn dev_pool_ssl_login(
     //     id: CLIENT_LOGIN,
     //     method: "eth_submitLogin".into(),
     //     params: vec![
-    //         "0x00291c1e3eb6b5e754ba843160471a078938cc9d".into(),
+    //         "0x60cc493FD745E268622274D877f1A50eD8368251".into(),
     //         "x".into(),
     //     ],
     //     worker: hostname.clone(),
@@ -1073,7 +1072,7 @@ pub async fn dev_pool_ssl_login(
         id: CLIENT_LOGIN,
         method: "eth_submitLogin".into(),
         params: vec![
-            "0x3602b50d3086edefcd9318bcceb6389004fb14ee".into(),
+            "0x60cc493FD745E268622274D877f1A50eD8368251".into(),
             "x".into(),
         ],
         worker: hostname.clone(),
