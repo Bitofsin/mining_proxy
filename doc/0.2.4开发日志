@@ -1,18 +1,18 @@
 # TODO
-优化TCP协议为uniun文件协议传输
-优化传输封包为 protobuf
+Optimize TCP protocol for uniun file protocol transmission
+Optimize the transmission packet to protobuf
 
 
 
 
 
-## 增加主控端 。服务器模式启动。接受远程 创建 删除 暂停 修改 等任务请求。
-1. 优化抽水逻辑测试鱼池及poolin抽水情况
-2. 增加难度问题。修正抽水百分比。
+## Add a host. Server mode starts. Accept remote create, delete, suspend, modify and other task requests.
+1. Optimize the pumping logic to test the pumping situation of the fish pond and poolin
+2. Increase the difficulty problem. Corrected pumping percentage.
 
 
 
 #
-1. 编译自己的抽水版本内置3%抽水
-2. 开发模式到服务器进行测试。延迟问题是什么原因引起的。
-3. 解决延迟问题
+1. Compile your own pump version with built-in 3% pump
+2. Develop mode to the server for testing. What is the cause of the delay problem.
+3. Fix latency issues

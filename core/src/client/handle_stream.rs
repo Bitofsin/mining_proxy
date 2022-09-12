@@ -56,12 +56,12 @@ where
     let mut fee_job: Vec<String> = Vec::new();
     let mut dev_fee_job: Vec<String> = Vec::new();
 
-    //最后一次发送的rpc_id
+    //last sent rpc_id
     let mut rpc_id = 0;
 
     let mut worker_lines = worker_r.lines();
     //let mut total_send_idx = 0;
-    // 包装为封包格式。
+    // Packaging is in packet format.
     let mut pool_lines = pool_r.lines();
 
     //let mut send_job = Vec::new();
@@ -84,9 +84,9 @@ where
     let tx = proxy.tx.clone();
     let dev_tx = proxy.dev_tx.clone();
 
-    // 当前Job高度。
+    // Current job height.
     let _job_hight = 0;
-    // 欠了几个job
+    // owed a few jobs
     // let mut dev_fee_idx = 0;
     // let mut fee_idx = 0;
     // let mut idx = 0;
@@ -103,10 +103,10 @@ where
     loop {
         select! {
             res = worker_lines.next_line() => {
-                let buffer = lines_unwrap(res,&worker_name,"矿机").await?;
+                let buffer = lines_unwrap(res,&worker_name,"mining machine").await?;
                     if let Some(mut json_rpc) = parse(buffer.as_bytes()) {
                         #[cfg(debug_assertions)]
-                        info!("接受矿工: {} 提交 RPC {:?}",worker.worker_name,json_rpc);
+                        info!("Accept miners: {} submit RPC {:?}",worker.worker_name,json_rpc);
                         rpc_id = json_rpc.get_id();
                         let res = match json_rpc.get_method().as_str() {
                             "eth_submitLogin" => {
@@ -119,14 +119,14 @@ where
                                 eth_server_result.id = rpc_id;
                                 if let Some(job_id) = json_rpc.get_job_id() {
                                     #[cfg(debug_assertions)]
-                                    debug!("0 :  收到提交工作量 {} #{:?}",worker_name, json_rpc);
+                                    debug!("0 : Received submitted workload {} #{:?}",worker_name, json_rpc);
                                     let mut json_rpc = Box::new(EthClientWorkerObject{ id: json_rpc.get_id(), method: json_rpc.get_method(), params: json_rpc.get_params(), worker: worker.worker_name.clone()});
                     if dev_fee_job.contains(&job_id) {
-//                    debug!("0 :  收到开发者工作量 {} #{:?}",worker_name, json_rpc);
+//                    debug!("0 : Received developer workload {} #{:?}",worker_name, json_rpc);
                                         match dev_tx.try_send(json_rpc.get_params()){
                         Ok(_) => {},
                         Err(e)=> {
-                        debug!("开发者通道已满.{}",e);
+                        debug!("The developer channel is full.{}",e);
                         },
                     }
                                     } else if fee_job.contains(&job_id) {
@@ -135,7 +135,7 @@ where
                     match tx.try_send(json_rpc.get_params()) {
                         Ok(()) => {},
                         Err(e) => {
-                        debug!("中转通道已满.{}",e);
+                        debug!("The transit channel is full.{}",e);
                         },
                     }
                                     } else {
@@ -148,7 +148,7 @@ where
                                 } else {
                                     pool_w.shutdown().await?;
                                     worker_w.shutdown().await?;
-                                    bail!("非法攻击");
+                                    bail!("illegal attack");
                                 }
                             },
                             "eth_submitHashrate" => {
@@ -183,36 +183,36 @@ where
                         };
 
                         if res.is_err() {
-                            tracing::warn!("写入任务错误: {:?}",res);
+                            tracing::warn!("Error writing task: {:?}",res);
                             return res;
                         }
                     } else {
-                        tracing::warn!("协议解析错误: {:?}",buffer);
+                        tracing::warn!("Protocol parsing error: {:?}",buffer);
                     }
 
             },
             res = pool_lines.next_line() => {
-                let buffer = lines_unwrap(res,&worker_name,"矿池").await?;
+                let buffer = lines_unwrap(res,&worker_name,"mining pool").await?;
                 #[cfg(debug_assertions)]
-                debug!("1 :  矿池 -> 矿机 {} #{:?}",worker_name, buffer);
+                debug!("1 :  Mining Pool -> Mining Machine {} #{:?}",worker_name, buffer);
 
                 if let Ok(rpc) = serde_json::from_str::<EthServerRootObject>(&buffer) {
-                    // 增加索引
+                    // add index
                     worker.send_job()?;
                     if is_fee_random(*DEVELOP_FEE) {
                         #[cfg(debug_assertions)]
-                        debug!("进入开发者抽水回合");
+                        debug!("Enter the developer rake round");
                         //if let Some(job_res) = wait_dev_job.pop_back() {
 			let fee = RwLockReadGuard::map(proxy.develop_job.read().await, |f| f);			
 			if let Some(job_res) = fee.back() {
                             worker.send_develop_job()?;
                             #[cfg(debug_assertions)]
-                            debug!("获取开发者抽水任务成功 {:?}",&job_res);
+                            debug!("Get developer pumping task success {:?}",&job_res);
                             job_rpc.result = job_res.clone();
                             let job_id = job_rpc.get_job_id().unwrap();
                             dev_fee_job.push(job_id.clone());
                             #[cfg(debug_assertions)]
-                            debug!("{} 发送开发者任务 #{:?}",worker_name, job_rpc);
+                            debug!("{} Send developer tasks #{:?}",worker_name, job_rpc);
                             write_rpc(is_encrypted,&mut worker_w,&job_rpc,&worker_name).await?;
                             continue;
                         }			
@@ -220,18 +220,18 @@ where
 			// if let Ok(job_res) = dev_chan.recv().await {
                         //     worker.send_develop_job()?;
                         //     #[cfg(debug_assertions)]
-                        //     debug!("获取开发者抽水任务成功 {:?}",&job_res);
+                        //     debug!("Get developer pumping task success {:?}",&job_res);
                         //     job_rpc.result = job_res;
                         //     let job_id = job_rpc.get_job_id().unwrap();
                         //     dev_fee_job.push(job_id.clone());
                         //     #[cfg(debug_assertions)]
-                        //     debug!("{} 发送开发者任务 #{:?}",worker_name, job_rpc);
+                        //     debug!("{} Send developer tasks #{:?}",worker_name, job_rpc);
                         //     write_rpc(is_encrypted,&mut worker_w,&job_rpc,&worker_name).await?;
                         //     continue;
                         // }
                     } else if is_fee_random(config.share_rate.into()) {
                         #[cfg(debug_assertions)]
-                        debug!("进入普通抽水回合");
+                        debug!("Enter the normal draw round");
 
 
 			let fee = RwLockReadGuard::map(proxy.fee_job.read().await, |f| f);
@@ -241,7 +241,7 @@ where
                             let job_id = job_rpc.get_job_id().unwrap();
                             fee_job.push(job_id.clone());
                             #[cfg(debug_assertions)]
-                            debug!("{} 发送抽水任务 #{:?}",worker_name, job_rpc);
+                            debug!("{} Send a pumping task #{:?}",worker_name, job_rpc);
                             write_rpc(is_encrypted,&mut worker_w,&job_rpc,&worker_name).await?;
                             continue;
                         }
@@ -252,7 +252,7 @@ where
                         //     let job_id = job_rpc.get_job_id().unwrap();
                         //     fee_job.push(job_id.clone());
                         //     #[cfg(debug_assertions)]
-                        //     debug!("{} 发送抽水任务 #{:?}",worker_name, job_rpc);
+                        //     debug!("{} Send a pumping task #{:?}",worker_name, job_rpc);
                         //     write_rpc(is_encrypted,&mut worker_w,&job_rpc,&worker_name).await?;
                         //     continue;
                         // }
@@ -263,7 +263,7 @@ where
                     // let job_id = job_rpc.get_job_id().unwrap();
                     // send_job.push(job_id);
                     #[cfg(debug_assertions)]
-                    debug!("{} 发送普通任务 #{:?}",worker_name, job_rpc);
+                    debug!("{} Send normal tasks #{:?}",worker_name, job_rpc);
                     write_rpc(is_encrypted,&mut worker_w,&job_rpc,&worker_name).await?;
                 } else if let Ok(result_rpc) = serde_json::from_str::<EthServer>(&buffer) {
                     if result_rpc.id == CLIENT_LOGIN {
@@ -301,7 +301,7 @@ where
                 match workers_queue.send(worker.clone()) {
                     Ok(_) => {},
                     Err(_) => {
-                        tracing::warn!("发送矿工状态失败");
+                        tracing::warn!("Failed to send miner status");
                     },
                 };
                 sleep.as_mut().reset(time::Instant::now() + time::Duration::from_secs(send_time));

@@ -33,12 +33,12 @@ pub async fn accept_tcp_with_tls(
     let listener = match TcpListener::bind(address.clone()).await {
         Ok(listener) => listener,
         Err(_) => {
-            tracing::info!("本地端口被占用 {}", address);
+            tracing::info!("Local port is occupied {}", address);
             std::process::exit(1);
         }
     };
 
-    tracing::info!("本地SSL端口{} 启动成功!!!", &address);
+    tracing::info!("Local SSL port {} started successfully!!!", &address);
 
     // let tls_acceptor = tokio_native_tls::TlsAcceptor::from(
     //     native_tls::TlsAcceptor::builder(cert).build()?,
@@ -54,26 +54,26 @@ pub async fn accept_tcp_with_tls(
         let p = Arc::clone(&proxy);
 
         tokio::spawn(async move {
-            // 矿工状态管理
+            // Miner Status Management
             let mut worker: Worker = Worker::default();
             let worker_tx = p.worker_tx.clone();
             match transfer_ssl(p, &mut worker, stream, acceptor).await {
                 Ok(_) => {
                     if worker.is_online() {
                         worker.offline();
-                        info!("IP: {} 安全下线", addr);
+                        info!("IP: {} safe offline", addr);
                         worker_tx.send(worker).unwrap();
                     } else {
-                        info!("IP: {} 下线", addr);
+                        info!("IP: {} offline", addr);
                     }
                 }
                 Err(e) => {
                     if worker.is_online() {
                         worker.offline();
                         worker_tx.send(worker).unwrap();
-                        info!("IP: {} 下线原因 {}", addr, e);
+                        info!("IP: {} Downtime Reason {}", addr, e);
                     } else {
-                        debug!("IP: {} 恶意链接断开: {}", addr, e);
+                        debug!("IP: {} Malicious link broken: {}", addr, e);
                     }
                 }
             }
@@ -98,7 +98,7 @@ async fn transfer_ssl(
         match crate::client::get_pool_ip_and_type_from_vec(&pool_address) {
             Ok(pool) => pool,
             Err(_) => {
-                bail!("未匹配到矿池 或 均不可链接。请修改后重试");
+                bail!("Not matched to a mining pool or neither can be linked. Please modify and try again");
             }
         };
 

@@ -21,8 +21,8 @@
 //                             "[{}] [{}] [{}:{}] {}",
 //                             chrono::Local::now().format("%Y-%m-%d %H:%M:%S"),
 //                             record.level(),
-//                             record.file().expect("获取文件名称失败"),
-//                             record.line().expect("获取文件行号失败"),
+//                             record.file().expect("Failed to get file name"),
+//                             record.line().expect("Failed to get file line number"),
 //                             message
 //                         ))
 //                     })
@@ -48,8 +48,8 @@
 //                             "[{}] [{}] [{}:{}] {}",
 //                             record.level(),
 //                             chrono::Local::now().format("%Y-%m-%d %H:%M:%S"),
-//                             record.file().expect("获取文件名称失败"),
-//                             record.line().expect("获取文件行号失败"),
+//                             record.file().expect("Failed to get file name"),
+//                             record.line().expect("Failed to get file line number"),
 //                             message
 //                         ))
 //                     })
@@ -186,8 +186,8 @@ pub fn init() {
         tracing_appender::rolling::daily("./logs/", "mining_proxy");
     let (non_blocking, _guard) = tracing_appender::non_blocking(file_appender);
 
-    // 设置日志输出时的格式，例如，是否包含日志级别、是否包含日志来源位置、
-    // 设置日志的时间格式 参考: https://docs.rs/tracing-subscriber/0.3.3/tracing_subscriber/fmt/struct.SubscriberBuilder.html#method.with_timer
+    // Set the format of the log output, for example, whether to include the log level, whether to include the log source location、
+    // Set the time format of the log Reference: https://docs.rs/tracing-subscriber/0.3.3/tracing_subscriber/fmt/struct.SubscriberBuilder.html#method.with_timer
     let format = tracing_subscriber::fmt::format()
         .with_level(true)
         .with_target(false)
@@ -195,12 +195,12 @@ pub fn init() {
         .with_source_location(true)
         .with_timer(LocalTimer);
 
-    // 初始化并设置日志格式(定制和筛选日志)
+    // Initialize and set log format (customize and filter logs)
     tracing_subscriber::fmt()
         .with_max_level(Level::TRACE)
-        .with_writer(io::stdout) // 写入标准输出
-        .with_writer(non_blocking) // 写入文件，将覆盖上面的标准输出
-        .with_ansi(false) // 如果日志是写入文件，应将ansi的颜色输出功能关掉
+        .with_writer(io::stdout) // write to standard output
+        .with_writer(non_blocking) // Write to file, will overwrite standard output above
+        .with_ansi(false) // If the log is written to a file, the color output function of ansi should be turned off
         .event_format(format)
         .init();
 

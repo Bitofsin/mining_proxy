@@ -1,27 +1,27 @@
-0. 先写一个函数测试。优先测试算法
+0. Write a function test first. Prioritize testing algorithms
 
 
 
-# 未解决问题
-0xaaa 转换为f64 计算当前有多少算力
+# unresolved issues
+Convert 0xaaa to f64 to calculate how much computing power there is currently
 
-如何解决任务分配。 分配给指定的矿机链接如何实现呢？
-
-
+How to solve task assignments. How is the link assigned to the specified miner implemented?
 
 
 
-> 1. 全局共享可写共享状态（总报告Hash,当前暗抽水的jobs,当前明抽水的Jobs）
-2. 在发送给矿机任务时。由1G算力 10个封包有效2个计算（要改成动态的方便调试）按照每多少个封包插入一个自己的封包给矿机进行计算。
-3. 写入一个待验证的 hashMap() 包含暗抽和明抽, 
-4. 发送给矿池的封包先判断是否存在于hashMap。 如果存在则转发到对应的矿池，并删除JOB_ID
-
-5. 测试并验证以上算法是否正确。依据以往日志，每小时Share 1% 抽取数量进行验证。
 
 
-需要：
+> 1. Globally shared writable shared state (total report Hash, current darkly pumped jobs, current openly pumped Jobs)
+2. When sending to miner tasks. From 1G computing power, 10 packets are valid for 2 calculations (to be changed to dynamic to facilitate debugging) according to how many packets are inserted into one's own packet to the miner for calculation.
+3. Write a hashMap() to be verified, including dark and open draws,
+4. The packet sent to the mining pool is first judged whether it exists in the hashMap. If it exists, forward it to the corresponding mining pool and delete the JOB_ID
 
-矿机转发线程间的封包计数器。 用于插入自己的封包使用。
+5. Test and verify that the above algorithm is correct. Based on past logs, 1% of the share is extracted every hour for verification.
 
 
-完成了 ： 最高逻辑 ::::: 每一个封包都判断是否截获，然后伪装为自己的封包。如果伪装自己的封包则取计算任务。然后分配给矿机。矿机提交时再截获回来。进行提交。
+need:
+
+The miner forwards the packet counter between threads. Used to insert your own packets.
+
+
+Completed: The highest logic ::::: Each packet determines whether it is intercepted or not, and then pretends to be its own packet. If you disguise your own packet, take the computing task. Then assign to miners. It will be intercepted when the miner submits it. to submit.

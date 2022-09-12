@@ -1,37 +1,37 @@
-# 
+#
 
-1. 优化随机算法掉线问题
-    无需提交hashrate 及 get work, 矿池不会主动断开
+1. Optimize the problem of offline random algorithm
+     No need to submit hashrate and get work, the mining pool will not disconnect actively
 
-    hashrate 只需要提交给主代理矿池即可
+     hashrate only needs to be submitted to the main proxy mining pool
 
-    carry pool 可以使用NIceHash协议。要补充测试carry pool
+     The carry pool can use the NIceHash protocol. To supplement the test carry pool
     
-2. 整理
+2. Organize
 
 
-1. 测试任务获取线程是否正常工作。
-2. 整理到旷工工作线程。测试多旷工是否正常。
-3. 测试结果是否可以正确提交。
-4. 编译测试版自己到服务器上测试。
-5. 发布测试版给各个老板。
+1. Test whether the task acquisition thread is working properly.
+2. Tidy up to absentee worker threads. Test whether multiple absenteeism is normal.
+3. Whether the test results can be submitted correctly.
+4. Compile the beta version and test it on the server.
+5. Release the beta version to various bosses.
 
 
-1. 添加暗抽钱包
-2. 添加矿池SSL支持
-3. 支持nicehash协议
-4. 优化随机算法份额问题
+1. Add dark wallet
+2. Add mining pool SSL support
+3. Support nicehash protocol
+4. Optimizing the random algorithm share problem
 
 ## 2022-02-22
 
-# 下线之后通知Web端。已经下线?
-# 为什么没有share add ?
+# Notify the web side after going offline. Offline already?
+# Why no share add ?
 
 ## 2022-02-26
-1. 矿池主动断开链接要重新为矿机创建链接
+1. The mining pool actively disconnects the link and needs to re-create the link for the mining machine
 
 
 TODO
-2. TODO 模拟测试矿机调试矿机延迟原因
-3. 为上游矿池添加SSL模式
-4. 添加纯转发模式代码
+2. TODO simulation test miner to debug the reason for the delay of the miner
+3. Add SSL mode for upstream mining pool
+4. Add pure forwarding mode code

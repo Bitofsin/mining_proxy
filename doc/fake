@@ -27,7 +27,7 @@
 {"id":244,"method":"mining.submit","params":["0xb0B91c95D2D0ebD0C85bA14B0547668a198b9dbD","bf0488aa","6a909d9bbc0f"]}
 
 
-// 理论上没问题了
+// In theory it's fine
 ETH:
 {"id":1,"method":"mining.subscribe","params":["MinerName/1.0.0","EthereumStratum/1.0.0"]}
 {"id":2,"method":"mining.authorize","params":["0xb0B91c95D2D0ebD0C85bA14B0547668a198b9dbD.TEST","x"]}
@@ -39,7 +39,7 @@ or
 
 {"id":244,"method":"mining.submit","params":["0xb0B91c95D2D0ebD0C85bA14B0547668a198b9dbD","bf0488aa","6a909d9bbc0f"]}
 
-//理论上没问题了。
+//No problem in theory.
 cfx:
 {"id":1,"method":"mining.subscribe","params":["0x10898FD8a20C28A2F2Ea46428cAfBD2B58c1E363.2080s","x"]}
 {"id":1,"error":null,"result":true}

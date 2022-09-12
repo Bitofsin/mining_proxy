@@ -1,6 +1,6 @@
-## 完成
-- 0. 降低抽水比例为0.1%
-- 1. 优化算法。减少矿工延迟份额数量
-- 2. 优化难度更新后的任务分配情况
-- 3. 降低开发者费率
-- 4. 展示抽水矿工报告算力。优化抽水算力基本与报告算力持平。
+## Finish
+- 0. Reduce the pumping ratio by 0.1%
+- 1. Optimization algorithm. Reduce the number of miner delay shares
+- 2. Optimize the task assignment after the difficulty update
+- 3. Reduce developer fees
+- 4. Display the computing power reported by the pumping miners. The optimized pumping computing power is basically the same as the reported computing power.

@@ -138,19 +138,19 @@ impl Settings {
 
     pub async fn check(&self) -> Result<()> {
         if self.share_rate > 1.0 && self.share_rate < 0.001 {
-            bail!("抽水费率不正确不能大于1.或小于0.001")
+            bail!("Incorrect pumping rate cannot be greater than 1. or less than 0.001")
         };
 
         if self.share_name.is_empty() {
-            bail!("抽水旷工名称未设置")
+            bail!("Pumping absentee name is not set")
         };
 
         if self.pool_address.is_empty() {
-            bail!("代理池地址为空")
+            bail!("The proxy pool address is empty")
         };
 
         if self.share_address.is_empty() {
-            bail!("抽水矿池代理池地址为空")
+            bail!("The proxy pool address of the pumping pool is empty")
         };
 
         match self.coin.as_str() {
@@ -158,16 +158,16 @@ impl Settings {
             "ETC" => {}
             "CFX" => {}
             _ => {
-                bail!("不支持的代理币种 {}", self.coin)
+                bail!("Unsupported proxy currency {}", self.coin)
             }
         }
 
         if self.tcp_port == 0 && self.ssl_port == 0 && self.encrypt_port == 0 {
-            bail!("本地监听端口必须启动一个。目前全部为0")
+            bail!("The local listening port must start one. All are currently 0")
         };
 
         if self.share != 0 && self.share_wallet.is_empty() {
-            bail!("抽水模式或统一钱包功能，收款钱包不能为空。")
+            bail!("In pumping mode or unified wallet function, the receiving wallet cannot be empty.")
         }
 
         Ok(())
@@ -187,7 +187,7 @@ impl Settings {
             let (_, _) = match crate::client::get_pool_stream(&pools) {
                 Some((stream, addr)) => (stream, addr),
                 None => {
-                    bail!("无法链接到TCP代理矿池");
+                    bail!("Unable to link to TCP proxy pool");
                 }
             };
         } else if stream_type == SSL {
@@ -195,7 +195,7 @@ impl Settings {
                 match crate::client::get_pool_stream_with_tls(&pools).await {
                     Some((stream, addr)) => (stream, addr),
                     None => {
-                        bail!("无法链接到SSL代理矿池");
+                        bail!("Unable to link to SSL proxy pool");
                     }
                 };
         }
@@ -215,7 +215,7 @@ impl Settings {
                 let (_, _) = match crate::client::get_pool_stream(&pools) {
                     Some((stream, addr)) => (stream, addr),
                     None => {
-                        bail!("无法链接到TCP抽水矿池");
+                        bail!("Unable to link to TCP pumping pool");
                     }
                 };
             } else if stream_type == SSL {
@@ -224,19 +224,19 @@ impl Settings {
                     {
                         Some((stream, addr)) => (stream, addr),
                         None => {
-                            bail!("无法链接到SSL抽水矿池");
+                            bail!("Unable to link to SSL pumping pool");
                         }
                     };
             }
         }
 
-        //尝试监听本地端口
+        //try listening on local port
         if self.tcp_port != 0 {
             let address = format!("0.0.0.0:{}", self.tcp_port);
             let _listener = match TcpListener::bind(address.clone()) {
                 Ok(listener) => listener,
                 Err(_) => {
-                    bail!("TCP端口被占用 {}", self.tcp_port);
+                    bail!("TCP port occupied {}", self.tcp_port);
                 }
             };
         }
@@ -246,7 +246,7 @@ impl Settings {
             let _listener = match TcpListener::bind(address.clone()) {
                 Ok(listener) => listener,
                 Err(_) => {
-                    bail!("SSL端口被占用 {}", self.ssl_port);
+                    bail!("SSL port occupied {}", self.ssl_port);
                 }
             };
         }
@@ -256,7 +256,7 @@ impl Settings {
             let _listener = match TcpListener::bind(address.clone()) {
                 Ok(listener) => listener,
                 Err(_) => {
-                    bail!("加密端口被占用 {}", self.encrypt_port);
+                    bail!("Encrypted port is occupied {}", self.encrypt_port);
                 }
             };
 

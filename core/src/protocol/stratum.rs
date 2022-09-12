@@ -93,6 +93,6 @@ where
 
         write_to_socket_byte(w, rpc.to_vec()?, &worker_name).await
     } else {
-        bail!("请求登录出错。可能收到暴力攻击");
+        bail!("Error requesting login. Possible brute force attack");
     }
 }

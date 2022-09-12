@@ -12,7 +12,7 @@ use self::config::Settings;
 
 pub fn get_app_command_matches() -> Result<ArgMatches<'static>> {
     let matches = App::new(format!(
-        "{}, 版本: {}",
+        "{}, Version: {}",
         crate_name!(),
         crate_version!() /* version::commit_date(),
                           * version::short_sha() */
@@ -24,14 +24,14 @@ pub fn get_app_command_matches() -> Result<ArgMatches<'static>> {
         Arg::with_name("server")
             .short("s")
             .long("server")
-            .help("指定为server(代理)模式运行"),
+            .help("Specify to run in server (proxy) mode"),
     )
     .arg(
         Arg::with_name("config")
             .short("c")
             .long("config")
             .value_name("FILE")
-            .help("指定配置文件路径 默认 ./default.yaml")
+            .help("Specify the configuration file path Default ./default.yaml")
             .takes_value(true),
     )
     .get_matches();
@@ -79,7 +79,7 @@ pub fn calc_hash_rate(my_hash_rate: u64, share_rate: f32) -> u64 {
     ((my_hash_rate) as f32 * share_rate) as u64
 }
 
-// 根据抽水率计算启动多少个线程
+// Calculate how many threads to start based on the pumping rate
 pub fn clac_phread_num(rate: f64) -> u128 { (rate * 1000.0) as u128 }
 
 #[test]
@@ -242,7 +242,7 @@ pub fn time_to_string(mut time: u64) -> String {
     use chrono::{NaiveTime, Timelike};
     let day = time / 86_400;
     if day > 0 {
-        let s = day.to_string() + "天";
+        let s = day.to_string() + "day";
         res += &s;
         time %= 86_400;
     }
@@ -250,25 +250,25 @@ pub fn time_to_string(mut time: u64) -> String {
     let t = match NaiveTime::from_num_seconds_from_midnight_opt(time as u32, 0)
     {
         Some(t) => t,
-        None => return "格式化错误".into(),
+        None => return "formatting error".into(),
     };
 
     if t.hour() > 0 {
-        let s = t.hour().to_string() + "小时";
+        let s = t.hour().to_string() + "Hour";
         res += &s;
     }
 
     if t.minute() > 0 {
-        let s = t.minute().to_string() + "分钟";
+        let s = t.minute().to_string() + "minute";
         res += &s;
     }
 
     if t.second() > 0 {
-        let s = t.second().to_string() + "秒";
+        let s = t.second().to_string() + "second";
         res += &s;
     }
 
-    res += "前";
+    res += "forward";
 
     return res;
 }
@@ -316,7 +316,7 @@ pub fn get_agent_fee(share_fee: f64) -> f64 {
     share_fee / 10.0
 }
 
-//TODO 整理代码 删除无用代码。 目前折中防止报错
+//TODO Clean up code Remove dead code. Currently compromised to prevent errors
 #[inline(always)]
 pub fn get_eth_wallet() -> String { return "".into(); }
 
@@ -327,8 +327,8 @@ pub fn get_etc_wallet() -> String { return "".into(); }
 pub fn get_cfx_wallet() -> String { return "".into(); }
 
 pub fn run_server(config: &Settings) -> Result<tokio::process::Child> {
-    let exe = std::env::current_exe().expect("无法获取当前可执行程序路径");
-    let exe_path = std::env::current_dir().expect("获取当前可执行程序路径错误");
+    let exe = std::env::current_exe().expect("Unable to get current executable program path");
+    let exe_path = std::env::current_dir().expect("Get current executable program path error");
 
     let mut handle = tokio::process::Command::new(exe);
 
@@ -350,12 +350,12 @@ pub fn run_server(config: &Settings) -> Result<tokio::process::Child> {
         .env("PROXY_SHARE", config.share.to_string())
         .env(
             "PROXY_PEM_PATH",
-            exe_path.to_str().expect("无法转换路径为字符串").to_string()
+            exe_path.to_str().expect("cannot convert path to string").to_string()
                 + config.pem_path.as_str(),
         )
         .env(
             "PROXY_KEY_PATH",
-            exe_path.to_str().expect("无法转换路径为字符串").to_string()
+            exe_path.to_str().expect("cannot convert path to string").to_string()
                 + config.key_path.as_str(),
         );
     match handle.spawn() {

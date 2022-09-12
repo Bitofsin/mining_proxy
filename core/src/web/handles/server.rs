@@ -25,7 +25,7 @@ pub async fn crate_app(
     if req.name == "" {
         return Ok(web::Json(Response::<String> {
             code: 40000,
-            message: "中转名称必须填写".into(),
+            message: "Transit name must be filled in".into(),
             data: String::default(),
         }));
     }
@@ -33,44 +33,44 @@ pub async fn crate_app(
     if req.tcp_port == 0 && req.ssl_port == 0 && req.encrypt_port == 0 {
         return Ok(web::Json(Response::<String> {
             code: 40000,
-            message: "未开启端口。请至少开启一个端口".into(),
+            message: "Port not open. Please open at least one port".into(),
             data: String::default(),
         }));
     }
 
     if req.pool_address.is_empty() {
-        //println!("中转矿池必须填写");
+        //println!("The transfer pool must be filled in");
         return Ok(web::Json(Response::<String> {
             code: 40000,
-            message: "中转矿池必须填写".into(),
+            message: "The transfer pool must be filled in".into(),
             data: String::default(),
         }));
     }
 
     if req.share != 0 {
         if req.share_address.is_empty() {
-            //println!("抽水矿池必须填写");
+            //println!("Pumping pool must be filled");
             return Ok(web::Json(Response::<String> {
                 code: 40000,
-                message: "抽水矿池必须填写".into(),
+                message: "Pumping pool must be filled".into(),
                 data: String::default(),
             }));
         }
 
         if req.share_wallet.is_empty() {
-            //println!("抽水钱包必须填写");
+            //println!("Pump wallet must be filled");
             return Ok(web::Json(Response::<String> {
                 code: 40000,
-                message: "抽水钱包必须填写".into(),
+                message: "Pump wallet must be filled".into(),
                 data: String::default(),
             }));
         }
 
         if req.share_rate <= 0.0 {
-            //println!("抽水比例必须填写");
+            //println!("The pumping ratio must be filled in");
             return Ok(web::Json(Response::<String> {
                 code: 40000,
-                message: "抽水比例必须填写".into(),
+                message: "The pumping ratio must be filled in".into(),
                 data: String::default(),
             }));
         }
@@ -95,10 +95,10 @@ pub async fn crate_app(
     match config.check().await {
         Ok(_) => {}
         Err(err) => {
-            tracing::error!("配置错误 {}", err);
+            tracing::error!("Configuration error {}", err);
             return Ok(web::Json(Response::<String> {
                 code: 40000,
-                message: format!("配置错误 {}", err),
+                message: format!("Configuration error {}", err),
                 data: String::default(),
             }));
             //std::process::exit(1);
@@ -108,10 +108,10 @@ pub async fn crate_app(
     match config.check_net_work().await {
         Ok(_) => {}
         Err(err) => {
-            tracing::error!("网络错误 {}", err);
+            tracing::error!("Network Error {}", err);
             return Ok(web::Json(Response::<String> {
                 code: 40000,
-                message: format!("网络错误 {}", err),
+                message: format!("Network Error {}", err),
                 data: String::default(),
             }));
             //std::process::exit(1);
@@ -147,12 +147,12 @@ pub async fn crate_app(
                     }
                 };
 
-            // 去重
+            // deduplication
             for c in &configs {
                 if config.name == c.name {
                     return Ok(web::Json(Response::<String> {
                         code: 40000,
-                        message: format!("配置错误 服务器名: {} 已经存在，请修改后重新添加。",config.name),
+                        message: format!("Configuration error Server name: {} already exists, please modify it and add it again.",config.name),
                         data: String::default(),
                     }));
                 }
@@ -330,7 +330,7 @@ pub struct OnlineWorkerResult {
     pub share_rate: f64,
 }
 
-// 展示选中的数据信息。以json格式返回
+// Display the selected data information. return in json format
 #[get("/user/server/{name}")]
 async fn server(
     proxy_server_name: web::Path<String>, app: web::Data<AppState>,
@@ -406,9 +406,9 @@ async fn server(
         res.total_hash = human_bytes(total_hash as f64);
     }
 
-    //1. 基本配置文件信息 .
-    //2. 抽水旷工信息     .
-    //3. 当前在线矿机总数 .
+    //1. Basic profile information.
+    //2. Pumping absenteeism information.
+    //3. The total number of current online miners.
 
     Ok(web::Json(Response::<OnlineWorkerResult> {
         code: 20000,
@@ -434,14 +434,14 @@ pub struct DashboardResult {
     pub fee_accept_index: u64,
     pub fee_share_index: u64,
     pub fee_reject_index: u64,
-    pub rate: f64,       //总代理算力
-    pub share_rate: f64, //抽水算力
+    pub rate: f64,       //General agent computing power
+    pub share_rate: f64, //Pumping computing power
     pub version: String,
     pub develop_worker_name: String,
     pub online_time: String,
 }
 
-// 展示选中的数据信息。以json格式返回
+// Display the selected data information. return in json format
 #[post("/user/dashboard")]
 async fn dashboard(
     app: web::Data<AppState>,

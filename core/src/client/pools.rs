@@ -35,7 +35,7 @@ pub async fn get_develop_pool_stream() -> Result<TcpStream> {
     let (stream, _) = match crate::client::get_pool_stream(&pools) {
         Some((stream, addr)) => (stream, addr),
         None => {
-            bail!("所有TCP矿池均不可链接。请修改后重试");
+            bail!("All TCP pools are unlinkable. Please modify and try again");
         }
     };
 
@@ -62,7 +62,7 @@ pub async fn get_develop_pool_stream() -> Result<TcpStream> {
 //     let (stream, _) = match crate::client::get_pool_stream(&pools) {
 //         Some((stream, addr)) => (stream, addr),
 //         None => {
-//             bail!("所有TCP矿池均不可链接。请修改后重试");
+//             bail!("All TCP pools are unlinkable. Please modify and try again");
 //         }
 //     };
 

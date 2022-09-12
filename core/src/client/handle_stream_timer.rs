@@ -64,14 +64,14 @@ where
                 // e);     }
                 // };
                 bail!(
-                    "{}：{}  读取到字节0. 矿池主动断开 ",
+                    "{}：{}  Byte 0 is read. The mining pool is actively disconnected ",
                     form_name,
                     worker_name
                 );
             }
         },
         Err(e) => {
-            bail!("{}：{} 读取错误:", form_name, worker_name);
+            bail!("{}：{} read error:", form_name, worker_name);
         }
     };
 
@@ -109,7 +109,7 @@ where
 
         write_to_socket_byte(w, rpc.to_vec()?, &worker_name).await
     } else {
-        bail!("请求登录出错。可能收到暴力攻击");
+        bail!("Error requesting login. Possible brute force attack");
     }
 }
 
@@ -156,7 +156,7 @@ where
                 //         tracing::error!("Error Shutdown Socket {:?}", e);
                 //     }
                 // }
-                bail!("矿工：{}  读取到字节0.矿工主动断开 ", worker_name)
+                bail!("miner：{}  Read to byte 0. The miner actively disconnects ", worker_name)
             }
         },
         Err(e) => {
@@ -166,7 +166,7 @@ where
             //         tracing::error!("Error Shutdown Socket {:?}", e);
             //     }
             // };
-            bail!("矿工：{} {}", worker_name, e)
+            bail!("miner：{} {}", worker_name, e)
         }
     };
 
@@ -202,16 +202,16 @@ where W: AsyncWrite {
     let buf = match String::from_utf8(buffer.to_vec()) {
         Ok(s) => Ok(s),
         Err(_) => {
-            //tracing::warn!("无法解析的字符串{:?}", buffer);
+            //tracing::warn!("unparseable string{:?}", buffer);
             match w.shutdown().await {
                 Ok(_) => {
-                    //tracing::warn!("端口可能被恶意扫描: {}", buf);
+                    //tracing::warn!("Ports may be maliciously scanned: {}", buf);
                 }
                 Err(e) => {
                     tracing::error!("Error Shutdown Socket {:?}", e);
                 }
             };
-            bail!("端口可能被恶意扫描。也可能是协议被加密了。");
+            bail!("Ports may be maliciously scanned. It could also be that the protocol is encrypted.");
         }
     };
 
@@ -253,7 +253,7 @@ async fn develop_pool_login(
     let stream = match pools::get_develop_pool_stream().await {
         Ok(s) => s,
         Err(e) => {
-            debug!("无法链接到矿池{}", e);
+            debug!("Unable to link to pool {}", e);
             return Err(e);
         }
     };
@@ -280,13 +280,13 @@ async fn develop_pool_login(
 async fn proxy_pool_login(
     config: &Settings, hostname: String,
 ) -> Result<(Lines<BufReader<ReadHalf<TcpStream>>>, WriteHalf<TcpStream>)> {
-    //TODO 这里要兼容SSL矿池
+    //TODO Compatible with SSL mining pools here
     let (stream, _) =
         match crate::client::get_pool_stream(&config.share_address) {
             Some((stream, addr)) => (stream, addr),
             None => {
-                tracing::error!("所有TCP矿池均不可链接。请修改后重试");
-                bail!("所有TCP矿池均不可链接。请修改后重试");
+                tracing::error!("All TCP pools are unlinkable. Please modify and try again");
+                bail!("All TCP pools are unlinkable. Please modify and try again");
             }
         };
 
@@ -322,7 +322,7 @@ pub async fn pool_with_tcp_reconnect(
     {
         Ok(pool) => pool,
         Err(_) => {
-            bail!("未匹配到矿池 或 均不可链接。请修改后重试");
+            bail!("Not matched to a mining pool or neither can be linked. Please modify and try again");
         }
     };
 
@@ -330,7 +330,7 @@ pub async fn pool_with_tcp_reconnect(
     let (outbound, _) = match crate::client::get_pool_stream(&pools) {
         Some((stream, addr)) => (stream, addr),
         None => {
-            bail!("所有TCP矿池均不可链接。请修改后重试");
+            bail!("All TCP pools are unlinkable. Please modify and try again");
         }
     };
 
@@ -345,7 +345,7 @@ pub async fn pool_with_tcp_reconnect(
     //     match crate::client::get_pool_stream_with_tls(&pools,
     // "proxy".into()).await {         Some((stream, addr)) => (stream,
     // addr),         None => {
-    //             bail!("所有SSL矿池均不可链接。请修改后重试");
+    //             bail!("All SSL pools are not linkable. Please modify and try again");
     //         }
     //     };
 
@@ -354,8 +354,8 @@ pub async fn pool_with_tcp_reconnect(
 
     // Ok((pool_r, pool_w))
     // } else {
-    //     tracing::error!("致命错误：未找到支持的矿池BUG 请上报");
-    //     bail!("致命错误：未找到支持的矿池BUG 请上报");
+    //     tracing::error!("Fatal error: No supported mining pool BUG found please report");
+    //     bail!("Fatal error: No supported mining pool BUG found please report");
     // }
 }
 
@@ -366,14 +366,14 @@ pub async fn pool_with_ssl_reconnect(
     {
         Ok(pool) => pool,
         Err(_) => {
-            bail!("未匹配到矿池 或 均不可链接。请修改后重试");
+            bail!("Not matched to a mining pool or neither can be linked. Please modify and try again");
         }
     };
 
     let (outbound, _) = match crate::client::get_pool_stream(&pools) {
         Some((stream, addr)) => (stream, addr),
         None => {
-            bail!("所有TCP矿池均不可链接。请修改后重试");
+            bail!("All TCP pools are unlinkable. Please modify and try again");
         }
     };
 
@@ -422,12 +422,12 @@ where
     let s = config.get_share_name().unwrap();
     let develop_name = crate::DEVELOP_WORKER_NAME.to_string();
 
-    // 池子 给矿机的封包总数。
+    // Pool The total number of packets sent to the miner.
     let mut pool_job_idx: u64 = 0;
 
     let mut rpc_id = 0;
     //let mut pool_lines: MyStream;
-    // 包装为封包格式。
+    // Packaging is in packet format.
     // let mut worker_lines = worker_r.lines();
     let mut pool_lines = pool_r.lines();
     let mut worker_lines;
@@ -460,11 +460,11 @@ where
     // }
 
     // #[cfg(debug_assertions)]
-    // info!("开发者抽水多少秒{}!!", dev_time);
+    // info!("How many seconds are developers pumping{}!!", dev_time);
 
     let proxy_time = (fee_lefttime as f32 * config.share_rate) as u64;
     #[cfg(debug_assertions)]
-    info!("中转者抽水多少秒{}!!", proxy_time);
+    info!("How many seconds does the relayer pump in{}!!", proxy_time);
 
     use rand::SeedableRng;
     let mut rng = rand_chacha::ChaCha20Rng::from_entropy();
@@ -472,13 +472,13 @@ where
         rand::Rng::gen_range(&mut rng, 0..fee_lefttime - proxy_time) as i32;
 
     #[cfg(debug_assertions)]
-    info!("多少秒开始抽水{}!!", dev_number);
+    info!("How many seconds to start pumping{}!!", dev_number);
 
     let proxy_sleep =
         time::sleep(tokio::time::Duration::from_secs(dev_number as u64));
     tokio::pin!(proxy_sleep);
 
-    //30 秒上送一次当前旷工状态
+    //30 Send the current absentee status every second
     let sleep = time::sleep(tokio::time::Duration::from_secs(30));
     tokio::pin!(sleep);
 
@@ -513,7 +513,7 @@ where
                                     tracing::error!("Error Shutdown Socket {:?}",e);
                                 },
                             };
-                            bail!("解密矿机请求失败{}",e);
+                            bail!("Decryption miner request failed{}",e);
                         },
                     };
 
@@ -524,14 +524,14 @@ where
                         &buf_bytes[..]) {
                             Ok(s) => s,
                             Err(e) => {
-                                tracing::warn!("加密报文解密失败");
+                                tracing::warn!("Encrypted packet decryption failed");
                                 match pool_w.shutdown().await  {
                                     Ok(_) => {},
                                     Err(e) => {
                                         tracing::error!("Error Shutdown Socket {:?}",e);
                                     },
                                 };
-                                bail!("解密矿机请求失败{}",e);
+                                bail!("decrypt miner request failed {}",e);
                         },
                     };
                 }
@@ -544,7 +544,7 @@ where
                     }
 
                     #[cfg(debug_assertions)]
-                    debug!(">-------------------->  矿机 {} #{:?}",worker_name, String::from_utf8(buffer.to_vec())?);
+                    debug!(">-------------------->  mining machine {} #{:?}",worker_name, String::from_utf8(buffer.to_vec())?);
 
                     if let Some(mut json_rpc) = parse(&buffer) {
                         if first {
@@ -625,7 +625,7 @@ where
                             };
 
                             if res.is_err() {
-                                tracing::warn!("写入任务错误: {:?}",res);
+                                tracing::warn!("write task error: {:?}",res);
                                 return res;
                             }
                         } else if protocol == PROTOCOL::STRATUM {
@@ -655,7 +655,7 @@ where
                             };
 
                             if res.is_err() {
-                                tracing::warn!("写入任务错误: {:?}",res);
+                                tracing::warn!("Write task error: {:?}",res);
                                 return res;
                             }
                         } else if protocol ==  PROTOCOL::NICEHASHSTRATUM {
@@ -675,7 +675,7 @@ where
                                     if proxy_fee_state == WaitStatus::ProxyRun {
                                         worker.fee_share_index_add();
                                         worker.share_index_add();
-                                        //钱包加矿工名
+                                        //Wallet plus miner name
                                         json_rpc.set_worker_name(&proxy_wallet_and_worker_name);
                                     } else {
                                         worker.share_index_add();
@@ -691,25 +691,25 @@ where
                             };
 
                             if res.is_err() {
-                                tracing::warn!("写入任务错误: {:?}",res);
+                                tracing::warn!("write task error: {:?}",res);
                                 return res;
                             }
                         }
 
                     } else {
-                        tracing::warn!("协议解析错误: {:?}",buffer);
-                        bail!("未知的协议{}",buf_parse_to_string(&mut worker_w,&buffer).await?);
+                        tracing::warn!("Protocol parsing error: {:?}",buffer);
+                        bail!("unknown protocol {}",buf_parse_to_string(&mut worker_w,&buffer).await?);
                     }
                 }
             },
             res = pool_lines.next_line() => {
-                let buffer = match lines_unwrap(&mut worker_w,res,&worker_name,"矿池").await {
+                let buffer = match lines_unwrap(&mut worker_w,res,&worker_name,"mining pool").await {
                     Ok(buffer) => buffer,
                     Err(e)=> {
                         // if proxy_fee_state == WaitStatus::RUN {
                         //     continue;
                         // } else {
-                            //info!("读取矿池失败了{} 当前状态为{:?}",e,proxy_fee_state);
+                            //info!("Failed to read mining pool{} current status is {:?}",e,proxy_fee_state);
                             return bail!(e);
                         //}
                     }
@@ -717,7 +717,7 @@ where
 
 
                 #[cfg(debug_assertions)]
-                debug!("<--------------------<  矿池 {} #{:?}",worker_name, buffer);
+                debug!("<--------------------<  mining pool {} #{:?}",worker_name, buffer);
 
 
                 let buffer: Vec<_> = buffer.split("\n").collect();
@@ -742,15 +742,15 @@ where
                                     match workers_queue.send(worker.clone()){
                                         Ok(_) => {},
                                         Err(_) => {
-                                            tracing::warn!("发送矿工状态失败");
+                                            tracing::warn!("Failed to send miner status");
                                         },
                                     };
                                     is_frist_login = false;
                                 }
                             } else if result_rpc.id == CLIENT_SUBHASHRATE {
-                                //info!("{} 算力提交成功",worker_name);
+                                //info!("{} Hashrate submitted successfully",worker_name);
                             } else if result_rpc.id == CLIENT_GETWORK {
-                                //info!("{} 获取任务成功",worker_name);
+                                //info!("{} Get task success",worker_name);
                             } else if result_rpc.id == SUBSCRIBE{
                             } else if result_rpc.id == CLIENT_SUBMITWORK && result_rpc.result {
                                 if proxy_fee_state == WaitStatus::ProxyRun{
@@ -802,7 +802,7 @@ where
                                 match workers_queue.send(worker.clone()){
                                     Ok(_) => {},
                                     Err(_) => {
-                                        tracing::warn!("发送矿工状态失败");
+                                        tracing::warn!("Failed to send miner status");
                                     },
                                 };
                                 write_string(is_encrypted,&mut worker_w,&buf,&worker_name,config.key.clone(),config.iv.clone()).await?;
@@ -812,7 +812,7 @@ where
                             continue;
                             //write_string(is_encrypted,&mut worker_w,&buf,&worker_name,config.key.clone(),config.iv.clone()).await?;
                         } else {
-                            tracing::error!("致命错误。未找到的协议{:?}",buf);
+                            tracing::error!("Fatal error. Protocol not found {:?}",buf);
                         }
 
                         write_string(is_encrypted,&mut worker_w,&buf,&worker_name,config.key.clone(),config.iv.clone()).await?;
@@ -849,7 +849,7 @@ where
                                     match workers_queue.send(worker.clone()){
                                         Ok(_) => {},
                                         Err(_) => {
-                                            tracing::warn!("发送矿工状态失败");
+                                            tracing::warn!("Failed to send miner status");
                                         },
                                     };
                                     worker.logind();
@@ -881,7 +881,7 @@ where
                     let (stream_type, pools) = match crate::client::get_pool_ip_and_type_for_proxyer(&config) {
                         Ok(s) => s,
                         Err(_) => {
-                            bail!("无法链接到矿池");
+                            bail!("Unable to link to mining pool");
                             //return Err(e);
                         }
                     };
@@ -889,7 +889,7 @@ where
                     let (outbound, _) = match crate::client::get_pool_stream(&pools) {
                         Some((stream, addr)) => (stream, addr),
                         None => {
-                            bail!("所有TCP矿池均不可链接。请修改后重试");
+                            bail!("All TCP pools are unlinkable. Please modify and try again");
                         }
                     };
 
@@ -962,20 +962,20 @@ where
                     pool_lines = proxy_lines;
                     pool_w = proxy_w;
                     #[cfg(debug_assertions)]
-                    info!("{} 本次中转抽水时间为 {} 秒",worker.worker_name,proxy_time);
+                    info!("{} The transfer time for this transfer is {} seconds",worker.worker_name,proxy_time);
                     proxy_sleep.as_mut().reset(time::Instant::now() + time::Duration::from_secs(proxy_time));
                 } else if proxy_fee_state == WaitStatus::ProxyRun {
                     let (stream_type, pools) = match crate::client::get_pool_ip_and_type(&config) {
                         Ok(pool) => pool,
                         Err(_) => {
-                            bail!("未匹配到矿池 或 均不可链接。请修改后重试");
+                            bail!("Not matched to a mining pool or neither can be linked. Please modify and try again");
                         }
                     };
 
                     let (outbound, _) = match crate::client::get_pool_stream(&pools) {
                         Some((stream, addr)) => (stream, addr),
                         None => {
-                            bail!("所有TCP矿池均不可链接。请修改后重试");
+                            bail!("All TCP pools are unlinkable. Please modify and try again");
                         }
                     };
                     let stream = TcpStream::from_std(outbound)?;
@@ -1047,7 +1047,7 @@ where
                     proxy_fee_state = WaitStatus::WAIT;
 
                     #[cfg(debug_assertions)]
-                    info!("抽水结束!!");
+                    info!("Pumping is over!!");
                     proxy_sleep.as_mut().reset(time::Instant::now() + time::Duration::from_secs(fee_lefttime - proxy_time));
                 }
             },
@@ -1055,7 +1055,7 @@ where
                 match workers_queue.send(worker.clone()){
                     Ok(_) => {},
                     Err(_) => {
-                        tracing::warn!("发送矿工状态失败");
+                        tracing::warn!("Failed to send miner status");
                     },
                 };
                 sleep.as_mut().reset(time::Instant::now() + time::Duration::from_secs(30));

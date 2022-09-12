@@ -187,11 +187,11 @@ impl ServerRpc for ServerSideJob {
     fn set_diff(&mut self, diff: String) -> bool {
         if self.result.len() <= 3 {
             //self.result.push(diff);
-            //矿池没有难度系数。可能任务会有部分延迟。待解决。
+            //The mining pool has no difficulty factor. There may be some delays in the task. to be solved.
         } else if self.result.len() > 3 {
             self.result[3] = diff;
         } else {
-            tracing::error!("矿池高度设置有问题。请修复此BUG");
+            tracing::error!("There is a problem with the mining pool height setting. Please fix this bug");
         }
         true
     }
@@ -259,20 +259,20 @@ impl ServerRpc for Server {
                     } else if let Some(h) = hex_to_int(&diff[..]) {
                         h as u64
                     } else {
-                        tracing::error!("收到任务JobId 字段不存在{:?}", self);
+                        tracing::error!("Received job JobId field does not exist {:?}", self);
                         0
                     }
                 } else {
                     if let Some(h) = hex_to_int(&diff[..]) {
                         h as u64
                     } else {
-                        tracing::error!("收到任务JobId 字段不存在{:?}", self);
+                        tracing::error!("Received job JobId field does not exist {:?}", self);
                         0
                     }
                 }
             }
             None => {
-                tracing::error!("收到任务JobId 字段不存在{:?}", self);
+                tracing::error!("Received job JobId field does not exist {:?}", self);
                 0
             }
         };
@@ -357,7 +357,7 @@ impl ServerRpc for ServerJobsWithHeight {
 
     fn get_id(&mut self) -> u64 { self.id }
 }
-//币印 {"id":0,"jsonrpc":"2.0","result":["
+//Currency print {"id":0,"jsonrpc":"2.0","result":["
 // 0x0d08e3f8adaf9b1cf365c3f380f1a0fa4b7dda99d12bb59d9ee8b10a1a1d8b91","
 // 0x1bccaca36bfde6e5a161cf470cbf74830d92e1013ee417c3e7c757acd34d8e08","
 // 0x000000007fffffffffffffffffffffffffffffffffffffffffffffffffffffff","00"],
@@ -399,18 +399,18 @@ pub fn handle_error(worker_id: u64, buf: &[u8]) {
     if let Ok(rpc) =
         serde_json::from_slice::<crate::protocol::rpc::eth::ServerError>(&buf)
     {
-        tracing::warn!("抽水矿机 {} Share Reject: {}", worker_id, rpc.error);
+        tracing::warn!("Pumping Miner {} Share Reject: {}", worker_id, rpc.error);
     } else if let Ok(_rpc) =
         serde_json::from_slice::<crate::protocol::rpc::eth::ServerRoot>(&buf)
     {
-        //tracing::warn!("抽水矿机 {} Share Reject: {}", worker_id, rpc.error);
+        //tracing::warn!("water pumping machine {} Share Reject: {}", worker_id, rpc.error);
     } else if let Ok(rpc) = serde_json::from_slice::<
         crate::protocol::rpc::eth::ServerRootError,
     >(&buf)
     {
-        tracing::warn!("抽水矿机 {} Share Reject: {}", worker_id, rpc.error.1);
+        tracing::warn!("water pumping machine {} Share Reject: {}", worker_id, rpc.error.1);
     } else {
-        tracing::warn!("抽水矿机 {} Share Reject: {:?}", worker_id, buf);
+        tracing::warn!("water pumping machine {} Share Reject: {:?}", worker_id, buf);
     }
 }
 
@@ -418,17 +418,17 @@ pub fn handle_error_for_worker(worker_name: &String, buf: &[u8]) {
     if let Ok(rpc) =
         serde_json::from_slice::<crate::protocol::rpc::eth::ServerError>(&buf)
     {
-        tracing::warn!("矿机 {} Share Reject: {}", worker_name, rpc.error);
+        tracing::warn!("mining machine {} Share Reject: {}", worker_name, rpc.error);
     } else if let Ok(_rpc) =
         serde_json::from_slice::<crate::protocol::rpc::eth::ServerRoot>(&buf)
     {
-        //tracing::warn!("矿机 {} Share Reject: {}", worker_name, rpc.error);
+        //tracing::warn!("mining machine {} Share Reject: {}", worker_name, rpc.error);
     } else if let Ok(rpc) = serde_json::from_slice::<
         crate::protocol::rpc::eth::ServerRootError,
     >(&buf)
     {
-        tracing::warn!("矿机 {} Share Reject: {}", worker_name, rpc.error.1);
+        tracing::warn!("mining machine {} Share Reject: {}", worker_name, rpc.error.1);
     } else {
-        tracing::warn!("矿机 {} Share Reject: {:?}", worker_name, buf);
+        tracing::warn!("mining machine {} Share Reject: {:?}", worker_name, buf);
     }
 }

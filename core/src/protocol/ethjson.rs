@@ -399,7 +399,7 @@ where
             );
             let temp_full_wallet =
                 config.share_wallet.clone() + "." + split[1].clone();
-            // 抽取全部替换钱包
+            // Extract all replacement wallets
             //rpc.set_wallet(&temp_full_wallet);
             *worker_name = temp_worker;
             write_to_socket_byte(w, rpc.to_vec()?, &worker_name).await?;
@@ -417,7 +417,7 @@ where
             Ok(temp_worker)
         }
     } else {
-        bail!("请求登录出错。可能收到暴力攻击");
+        bail!("Error requesting login. Possible brute force attack");
     }
 }
 
@@ -441,7 +441,7 @@ where
             );
             let temp_full_wallet =
                 config.share_wallet.clone() + "." + split[1].clone();
-            // 抽取全部替换钱包
+            // Extract all replacement wallets
             rpc.set_wallet(&temp_full_wallet);
             *worker_name = temp_worker;
         } else {
@@ -453,12 +453,12 @@ where
                 wallet.clone(),
             );
             *worker_name = temp_worker;
-            // 抽取全部替换钱包
+            // Extract all replacement wallets
             rpc.set_wallet(&config.share_wallet);
         }
 
         write_to_socket_byte(w, rpc.to_vec()?, &worker_name).await
     } else {
-        bail!("请求登录出错。可能收到暴力攻击");
+        bail!("Error requesting login. Possible brute force attack");
     }
 }

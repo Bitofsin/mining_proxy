@@ -1,10 +1,10 @@
-## TODO 
+## TODO
 
 
 ## BUG
-矿工列表下线后不删除数据。
+The data will not be deleted after the miner list goes offline.
 
 ## DONE
-- 将worker的状态细分为 有效 无效，过期。及当前任务索引。
-- 将每个worker独立为一个状态。
-- 管理workder的状态每十分钟清空一次。
+- Subdivide worker status into active, inactive, and expired. and the current task index.
+- Separate each worker into a state.
+- The state of the management worker is cleared every ten minutes.

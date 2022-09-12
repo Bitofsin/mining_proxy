@@ -68,8 +68,8 @@ fn main() -> Result<()> {
         tracing_appender::rolling::daily("./logs/", "mining_proxy");
     let (non_blocking, _guard) = tracing_appender::non_blocking(file_appender);
 
-    // 设置日志输出时的格式，例如，是否包含日志级别、是否包含日志来源位置、
-    // 设置日志的时间格式 参考: https://docs.rs/tracing-subscriber/0.3.3/tracing_subscriber/fmt/struct.SubscriberBuilder.html#method.with_timer
+    // Set the format of the log output, for example, whether to include the log level, whether to include the log source location,
+    // Set the time format of the log Reference: https://docs.rs/tracing-subscriber/0.3.3/tracing_subscriber/fmt/struct.SubscriberBuilder.html#method.with_timer
     let format = tracing_subscriber::fmt::format()
         .with_level(true)
         .with_target(false)
@@ -77,12 +77,12 @@ fn main() -> Result<()> {
         .with_source_location(true)
         .with_timer(LocalTimer);
 
-    // 初始化并设置日志格式(定制和筛选日志)
+    // Initialize and set log format (customize and filter logs)
     tracing_subscriber::fmt()
         .with_max_level(Level::DEBUG)
-        //.with_writer(io::stdout) // 写入标准输出
-        .with_writer(non_blocking) // 写入文件，将覆盖上面的标准输出
-        .with_ansi(false) // 如果日志是写入文件，应将ansi的颜色输出功能关掉
+        //.with_writer(io::stdout) // write to standard output
+        .with_writer(non_blocking) // Write to file, will overwrite standard output above
+        .with_ansi(false) // If the log is written to a file, the color output function of ansi should be turned off
         .event_format(format)
         .init();
 
@@ -90,7 +90,7 @@ fn main() -> Result<()> {
     let matches = core::util::get_app_command_matches()?;
     if !matches.is_present("server") {
         tracing::info!(
-            "版本: {} commit: {} {}",
+            "version: {} commit: {} {}",
             crate_version!(),
             version::commit_date(),
             version::short_sha(),
@@ -196,10 +196,10 @@ async fn async_main(_matches: ArgMatches<'_>) -> Result<()> {
         for (_, other_server) in &mut *proxy_server {
             other_server.child.kill().await?;
         }
-        bail!("web端口 {} 被占用了", port);
+        bail!("web port {} is occupied", port);
     };
 
-    tracing::info!("界面启动成功地址为: {}", format!("0.0.0.0:{}", port));
+    tracing::info!("The interface starts successfully at the address: {}", format!("0.0.0.0:{}", port));
     web_sever.await?;
     Ok(())
 }
@@ -220,7 +220,7 @@ async fn tokio_run(matches: &ArgMatches<'_>) -> Result<()> {
     match config.check().await {
         Ok(_) => {}
         Err(err) => {
-            tracing::error!("config配置错误 {}", err);
+            tracing::error!("config configuration error {}", err);
             std::process::exit(1);
         }
     };
@@ -228,20 +228,20 @@ async fn tokio_run(matches: &ArgMatches<'_>) -> Result<()> {
     match config.check_net_work().await {
         Ok(_) => {}
         Err(err) => {
-            tracing::error!("网络错误 {}", err);
+            tracing::error!("Network Error {}", err);
         }
     };
 
     // let cert = match std::fs::File::open(config.pem_path.clone()).await {
     //     Ok(f) => {
-    //         tracing::info!("读取到自定义证书: {}", config.pem_path);
+    //         tracing::info!("Read custom certificate: {}", config.pem_path);
     //         // let cert = certs(&mut std::io::BufReader::new(f))
     //         // .map_err(|_| {
     //         //     // std::io::Error::new(
     //         //     //     std::io::ErrorKind::InvalidInput,
-    //         //     //     "{} pem证书失败,请使用正确的pem证书!!!",
+    //         //     //     "{} pem certificate failed, please use correct pem certificate!!!",
     //         //     // )
-    //         //     bail!("{} pem证书失败,请使用正确的pem证书!!!")
+    //         //     bail!("{} pem certificate failed, please use correct pem certificate!!!")
     //         // })
     //         // .map(|mut certs| certs.drain(..).map(Certificate).collect();
     //         load_certs()
@@ -249,32 +249,32 @@ async fn tokio_run(matches: &ArgMatches<'_>) -> Result<()> {
     //         Some(f)
     //     }
     //     Err(_) => {
-    //         tracing::info!("未读取到证书: {},使用默认证书", config.pem_path);
+    //         tracing::info!("Certificate not read: {}, use default certificate", config.pem_path);
     //         None
     //     }
     // };
 
     // let key = match File::open(config.key_path.clone()).await {
     //     Ok(f) => {
-    //         tracing::info!("读取到自定义证书: {}", config.key_path);
+    //         tracing::info!("Read custom certificate: {}", config.key_path);
 
     //         Some(f)
     //     }
     //     Err(_) => {
-    //         tracing::info!("未读取到证书: {},使用默认证书", config.key_path);
+    //         tracing::info!("Certificate not read: {}, use default certificate", config.key_path);
     //         None
     //     }
     // };
 
     let mode = if config.share == 0 {
-        "纯代理模式"
+        "Pure proxy mode"
     } else if config.share == 1 {
-        "抽水模式"
+        "Pumping mode"
     } else {
-        "统一钱包模式"
+        "Unified wallet mode"
     };
 
-    tracing::info!("名称 {} 当前启动模式为: {}", config.name, mode);
+    tracing::info!("name {} The current startup mode is: {}", config.name, mode);
 
     let worker_name = config.share_name.clone();
 
@@ -283,7 +283,7 @@ async fn tokio_run(matches: &ArgMatches<'_>) -> Result<()> {
     ) {
         Ok((stream, addr)) => (stream, addr),
         Err(e) => {
-            tracing::error!("Share_address 矿池参数格式化失败。无法启动 {}", e);
+            tracing::error!("Share_address mining pool parameter formatting failed. Unable to start {}", e);
             return Ok(());
         }
     };
@@ -291,20 +291,20 @@ async fn tokio_run(matches: &ArgMatches<'_>) -> Result<()> {
     let certs = match load_certs(Path::new(&config.pem_path)) {
         Ok(cert) => {
             // tracing::info!(
-            //     "自定义SSL证书 {} 读取成功。使用此证书.",
+            //     "Custom SSL certificate {} read successfully. use this certificate.",
             //     config.pem_path
             // );
             cert
         }
         Err(_) => {
             // tracing::error!(
-            //     "自定义SSL证书 {} 未找到或格式不正确.将使用默认证书",
+            //     "Custom SSL certificate {} not found or malformed. Default certificate will be used",
             //     config.pem_path
             // );
-            //panic!("未找到默认证书pem");
+            //panic!("Default certificate pem not found");
 
             tracing::info!(
-                "自定义SSL证书 {} 读取失败。请设置证书。未设置程序将退出。。",
+                "Custom SSL certificate {} read failed. Please set the certificate. The program will exit if not set. .",
                 config.pem_path
             );
             std::process::exit(1);
@@ -314,22 +314,22 @@ async fn tokio_run(matches: &ArgMatches<'_>) -> Result<()> {
     let mut keys = match load_keys(Path::new(&config.key_path)) {
         Ok(key) => {
             // tracing::info!(
-            //     "自定义秘钥key {} 读取成功。使用此秘钥。",
+            //     "The custom key key {} was read successfully. Use this key.",
             //     config.key_path
             // );
             key
         }
         Err(_) => {
             // tracing::error!(
-            //     "自定义秘钥key {} 未找到或格式不正确.将使用默认证书",
+            //     "Custom key key {} not found or malformed. Default certificate will be used",
             //     config.key_path
             // );
             tracing::info!(
-                "自定义秘钥key {} 读取失败。请设置证书。未设置程序将退出。。",
+                "Failed to read custom key key {}. Please set the certificate. The program will exit if not set. .",
                 config.key_path
             );
             std::process::exit(1);
-            //panic!("未找到默认Key");
+            //panic!("Default Key not found");
             //let key_pem = include_bytes!("key.pem");
         }
     };
@@ -343,13 +343,13 @@ async fn tokio_run(matches: &ArgMatches<'_>) -> Result<()> {
         }) {
         Ok(conf) => {
             // tracing::info!(
-            //     "自定义SSL证书 {} 格式正确。使用此证书作为SSL证书",
+            //     "Custom SSL certificate {} is well-formed. Use this certificate as SSL certificate",
             //     config.pem_path
             // );
             conf
         }
         Err(e) => {
-            tracing::info!("证书格式化失败。 请修改证书: {}", e);
+            tracing::info!("Certificate formatting failed. Please modify the certificate: {}", e);
             std::process::exit(1);
         }
     };
@@ -366,8 +366,8 @@ async fn tokio_run(matches: &ArgMatches<'_>) -> Result<()> {
     //     bounded::<Vec<String>>(15);
     // let (dev_tx, dev_rx) =
     //     bounded::<Vec<String>>(15);
-    tracing::debug!("创建矿工队列");
-    // 旷工状态发送队列
+    tracing::debug!("Create a miner queue");
+    // Absenteeism status sending queue
     let (worker_tx, worker_rx) = mpsc::unbounded_channel::<Worker>();
 
     let mconfig = config.clone();
@@ -414,7 +414,7 @@ async fn tokio_run(matches: &ArgMatches<'_>) -> Result<()> {
         );
 
         if let Err(err) = res {
-            tracing::error!("致命错误 : {}", err);
+            tracing::error!("fatal error: {}", err);
         }
     } else if stream_type == SSL {
         let (proxy_lines, proxy_w) = core::client::proxy_pool_login_with_ssl(
@@ -447,7 +447,7 @@ async fn tokio_run(matches: &ArgMatches<'_>) -> Result<()> {
         );
 
         if let Err(err) = res {
-            tracing::error!("致命错误 : {}", err);
+            tracing::error!("fatal error: {}", err);
         }
     }
 
@@ -483,7 +483,7 @@ async fn send_to_parent(
                 }
             }
         } else {
-            tracing::error!("无法链接到主控web端");
+            tracing::error!("Unable to link to the master web");
             tokio::time::sleep(tokio::time::Duration::from_secs(60 * 2)).await;
         }
     }
@@ -494,12 +494,12 @@ async fn recv_from_child(app: AppState) -> Result<()> {
     let listener = match tokio::net::TcpListener::bind(address.clone()).await {
         Ok(listener) => listener,
         Err(_) => {
-            tracing::info!("本地端口被占用 {}", address);
+            tracing::info!("Local port is occupied {}", address);
             std::process::exit(1);
         }
     };
 
-    tracing::info!("本地TCP端口{} 启动成功!!!", &address);
+    tracing::info!("Local TCP port {} started successfully!!!", &address);
     loop {
         let (mut stream, _) = listener.accept().await?;
         let inner_app = app.clone();
@@ -532,7 +532,7 @@ async fn recv_from_child(app: AppState) -> Result<()> {
                                 temp_app.workers.push(online_work.worker);
                             }
                         } else {
-                            tracing::error!("未找到此端口");
+                            tracing::error!("This port was not found");
                         }
                     }
                 };
@@ -552,7 +552,7 @@ async fn extract(req: &mut ServiceRequest) -> Result<Vec<String>, Error> {
     // println!("{:?}", req.headers().get("token"));
 
     if req.path() != "/api/user/login" {
-        // 判断权限
+        // Judgment authority
         if let Some(token) = req.headers().get("token") {
             let token_data = decode::<Claims>(
                 token.to_str().unwrap(),

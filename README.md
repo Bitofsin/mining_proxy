@@ -3,8 +3,8 @@
   <img src="https://raw.githubusercontent.com/YusongWang/mining_proxy/9ec34e9d780866ab8792df09a9d6ec0b0f01b013/images/logo.png" width="350"/>
 </h1>
 
-<h2 align="center">全开源 - 无内置开发者钱包</h2>
-<h4 align="center">Rust语言编写 基于tokio生态的ETH/ETC/CFX 代理抽水软件</h4>
+<h2 align="center">Fully open source - no built-in developer wallet</h2>
+<h4 align="center">Rust language-based ETH/ETC/CFX proxy pumping software based on tokio ecology</h4>
 
 <p align="center">
   <a>
@@ -20,47 +20,46 @@
     <img src="https://img.shields.io/badge/License-Apache-green.svg" alt="travis">
   </a>
 </p>
-<p align="center">最新版本见Release <a href="https://github.com/YusongWang/mining_proxy/releases">Github Release</a></p>
-<p align="center">历史版本: https://github.com/dothinkdone/mining_proxy/releases</p>
+<p align="center">See Release for the latest version <a href="https://github.com/YusongWang/mining_proxy/releases">Github Release</a></p>
+<p align="center">Historical releases: https://github.com/dothinkdone/mining_proxy/releases</p>
 <p align="center">
 Coffee: Eth+BSC+HECO+Matic: 0x3602b50d3086edefcd9318bcceb6389004fb14ee
 </p>
 
 <p align="center">
-  <a href="https://t.me/+ZkUDlH2Fecc3MGM1">Telegram 群</a> •
-  <a href="https://jq.qq.com/?_wv=1027&k=AWfknDiw">QQ 群</a> 
+  <a href="https://t.me/+ZkUDlH2Fecc3MGM1">Telegram group</a> •
+  <a href="https://jq.qq.com/?_wv=1027&k=AWfknDiw">QQ group</a>
 </p>
 
 ![Screenshot](https://raw.githubusercontent.com/YusongWang/mining_proxy/master/doc/images/web.jpg)
 
-## :sparkles: 特性
+## :sparkles: features
 
-- :cloud: 支持ETH ETC CFX 转发
-- :zap: 性能强劲，CPU占用低。
-- 💻 可以自定义抽水比例
-- 📚 可以自定义抽水算法。
-- 💾 安全稳定： 支持TCP SSL 及加密方式(轻量算法，非SSR一类的垃圾东西)3种不通的协议
-- :outbox_tray: 一台机器只需要开启一个Web界面。可配置多矿池转发（没有上限）
-- :rocket: 開箱即用：All-In-One 打包，一鍵搭建運行，一鍵配置
-- :family_woman_girl_boy: 支持Liunx Windows
+- :cloud: Support ETH ETC CFX forwarding
+- :zap: High performance and low CPU usage.
+- 💻 You can customize the draw ratio
+- 📚 You can customize the pumping algorithm.
+- 💾 Safe and stable: Supports 3 different protocols including TCP SSL and encryption methods (lightweight algorithms, non-SSR garbage)
+- :outbox_tray: A machine only needs to open a web interface. Configurable multi-pool forwarding (no upper limit)
+- :rocket: Out of the box: All-In-One packaging, one-click build and run, one-click configuration
+- :family_woman_girl_boy: supports Liunx Windows
 
-## :hammer_and_wrench: 部署
+## :hammer_and_wrench: deploy
 
-- 自行编译
-编译遇到问题基本都是web的源码没有clone
-看这里：https://github.com/YusongWang/mining_proxy/issues/26
+- self-compile
+Compilation problems are basically the source code of the web without clone
+See here: https://github.com/YusongWang/mining_proxy/issues/26
 
-在软件运行目录下创建 .env 文件
-```env
+Create a .env file in the software running directory
+````env
 MINING_PROXY_WEB_PORT=8020
 MINING_PROXY_WEB_PASSWORD=123456789
 JWT_SECRET=test
-```
-第一行是网页的端口
-第二行是网页管理的密码
-第三行是登录密码的加密秘钥。建议用随机字符串不少于32位的字符串
+````
+The first line is the port of the web page
+The second line is the password for web management
+The third line is the encryption key for the login password. It is recommended to use a random string of at least 32 bits
 
 
-## 其他说明
-<a href="https://github.com/YusongWang/mining_proxy_web">Web界面地址</a><br>
-
+## other instructions
+<a href="https://github.com/YusongWang/mining_proxy_web">Web interface address</a><br>

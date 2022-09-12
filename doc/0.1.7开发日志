@@ -1,9 +1,9 @@
 ## TODO
-- 1. 优化延迟。并展示矿机延迟。如何优化计算每次封包开始到结束时间
+- 1. Optimize latency. And show the miner delay. How to optimize the calculation of the start to end time of each packet
 
 
----------  3. 支持多钱包抽水设置。
+--------- 3. Support multi-wallet pump setting.
 
 
 ## DONE
-- 2. 新增server模式及客户端模式。支持加密传输数据。
+- 2. Added server mode and client mode. Supports encrypted transmission of data.

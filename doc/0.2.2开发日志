@@ -1,28 +1,28 @@
-# feat 发版时间 2022-01-04 必须发
+# feat Release time 2022-01-04 Must be released
 - 1. 
 - 2. 
 
 ## TODO
-6. 添加抽水钱包逻辑。要多测试这部分。
+6. Add pumping wallet logic. Test this part more.
 
 ## done
-1. 保存当前创建的所有代理服务的配置文件。并重启后自定启动起来。
-2. 展示所有矿工信息。目前没想到如何与web主节点通讯。考虑监听一个TCP端口。本地和远程定时发送Ping Pong，并由server 发送旷工信息给web界面。
-3. 打包为一个文件。用包名 actix-web-static-files 如果不可以就直接将文件写入目录吧。
+1. Save the currently created configuration files for all proxy services. And after restarting, it will start up by itself.
+2. Display all miner information. I have no idea how to communicate with the web master node. Consider listening on a TCP port. Ping Pong is sent regularly locally and remotely, and the server sends absenteeism information to the web interface.
+3. Package as a file. Use the package name actix-web-static-files If you can't, just write the file directly to the directory.
 
 
-## 2022.01.04 
-- 1. 完善登录功能及权限校验
+##2022.01.04
+- 1. Improve the login function and permission verification
 
-## 2022.01.05 
-- 2. 完善头像欢迎页面功能展示及文章用户组展示链接等
-- 3. 完善创建代理矿池逻辑vue部分。优先使用选择内容。选择了一个下边就切换。允许选择币种信息。
+##2022.01.05
+- 2. Improve the function display of the avatar welcome page and the display link of the article user group, etc.
+- 3. Improve the vue part of creating proxy pool logic. Use selections first. Select one to switch. Allows selection of currency information.
 
 
 ## 2021.01.07
-1. 创建代理服务时。要进行去重判断。
-2. 完善 下线后的旷工不在展示
-3. 完善 不同抽水代理模式的视图判断
-4. 完善展示旷工信息页面总览。{及上送时间} 下个版本实现在线时间。
-5. 整理web 防止Panic 取消所有exp
-6. 内置p12证书
+1. When creating a proxy service. To make a de-duplication judgment.
+2. Improve. Absenteeism after offline is not displayed.
+3. Improve the view judgment of different pumping agent modes
+4. Improve the overview of the page displaying absenteeism information. {and upload time} The next version will implement online time.
+5. Organize the web to prevent Panic from canceling all exp
+6. Built-in p12 certificate

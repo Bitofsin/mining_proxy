@@ -19,7 +19,7 @@ async fn login(
     if password != req.password {
         return Ok(web::Json(Response::<TokenDataResponse> {
             code: 40000,
-            message: "密码不正确".into(),
+            message: "The password is incorrect".into(),
             data: TokenDataResponse::default(),
         }));
     }
@@ -35,7 +35,7 @@ async fn login(
     } else {
         Ok(web::Json(Response::<TokenDataResponse> {
             code: 40000,
-            message: "生成token失败".into(),
+            message: "Failed to generate token".into(),
             data: TokenDataResponse::default(),
         }))
     }

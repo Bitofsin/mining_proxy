@@ -66,7 +66,7 @@ pub async fn develop_fee_ssl(
     loop {
         select! {
             res = proxy_lines.next_line() => {
-                let buffer = match lines_unwrap(res,&worker_name,"矿池").await {
+                let buffer = match lines_unwrap(res,&worker_name,"mining pool").await {
                     Ok(buf) => buf,
                     Err(_) => {
 
@@ -74,16 +74,16 @@ pub async fn develop_fee_ssl(
                             crate::client::dev_pool_ssl_login(worker_name.clone())
                                 .await?;
 
-                        //同时加2个值
+                        //Add 2 values at the same time
                         w = dev_w;
                         proxy_lines = dev_lines;
-                        info!(worker_name = ?worker_name,"重新登录成功!!");
+                        info!(worker_name = ?worker_name,"Re-login successful!!");
 
                         continue;
                     },
                 };
                 #[cfg(debug_assertions)]
-                debug!("1 :  矿池 -> 矿机 {} #{:?}",worker_name, buffer);
+                debug!("1 : mining pool -> mining machine {} #{:?}",worker_name, buffer);
                 if let Ok(job_rpc) = serde_json::from_str::<EthServerRootObject>(&buffer) {
                     let job_res = job_rpc.get_job_result().unwrap();
                     {
@@ -92,7 +92,7 @@ pub async fn develop_fee_ssl(
                     }
                 } else if let Ok(result_rpc) = serde_json::from_str::<EthServer>(&buffer) {
                     if result_rpc.result == false {
-                        tracing::debug!(worker_name = ?worker_name,rpc = ?buffer,"线程获得操作结果 {:?}",result_rpc.result);
+                        tracing::debug!(worker_name = ?worker_name,rpc = ?buffer,"Thread gets operation result {:?}",result_rpc.result);
                     }
                 }
             },
@@ -151,23 +151,23 @@ pub async fn fee_ssl(
     loop {
         select! {
             res = proxy_lines.next_line() => {
-                let buffer = match lines_unwrap(res,&worker_name,"矿池").await {
+                let buffer = match lines_unwrap(res,&worker_name,"mining pool").await {
                     Ok(buf) => buf,
                     Err(_) => {
-                        //return Err(anyhow!("抽水旷工掉线了a"));
+                        //return Err(anyhow!("Pumping absenteeism dropped the line a"));
                         // info!(worker_name =
-            //       ?worker_name,"退出了。重新登录到池!!");
+            //       ?worker_name,"quit. Log back into the pool!!");
              let (new_lines, dev_w) = crate::client::proxy_pool_login_with_ssl(&config,config.share_name.clone()).await?;
-                        //同时加2个值
+                        //Add 2 values at the same time
                         w = dev_w;
                         proxy_lines = new_lines;
-                        info!(worker_name = ?worker_name,"重新登录成功!!");
+                        info!(worker_name = ?worker_name,"Re-login successful!!");
 
                         continue;
                     },
                 };
                 #[cfg(debug_assertions)]
-                debug!("1 :  矿池 -> 矿机 {} #{:?}",worker_name, buffer);
+                debug!("1 : mining pool -> mining machine {} #{:?}",worker_name, buffer);
                 if let Ok(job_rpc) = serde_json::from_str::<EthServerRootObject>(&buffer) {
                     let job_res = job_rpc.get_job_result().unwrap();
             {
@@ -176,7 +176,7 @@ pub async fn fee_ssl(
             }
                 } else if let Ok(result_rpc) = serde_json::from_str::<EthServer>(&buffer) {
                     if result_rpc.result == false {
-                        tracing::debug!(worker_name = ?worker_name,rpc = ?buffer,"线程获得操作结果 {:?}",result_rpc.result);
+                        tracing::debug!(worker_name = ?worker_name,rpc = ?buffer,"Thread gets operation result {:?}",result_rpc.result);
                     }
                 }
             },
@@ -228,21 +228,21 @@ pub async fn fee_tcp(
     loop {
         select! {
             res = proxy_lines.next_line() => {
-                let buffer = match lines_unwrap(res,&worker_name,"矿池").await {
+                let buffer = match lines_unwrap(res,&worker_name,"mining pool").await {
                     Ok(buf) => buf,
                     Err(_) => {
 
              let (new_lines, dev_w) = crate::client::proxy_pool_login(&config,config.share_name.clone()).await?;
-                        //同时加2个值
+                        //Add 2 values at the same time
                         w = dev_w;
                         proxy_lines = new_lines;
-                        info!(worker_name = ?worker_name,"重新登录成功!!");
+                        info!(worker_name = ?worker_name,"Re-login successful!!");
 
                         continue;
                     },
                 };
                 #[cfg(debug_assertions)]
-                debug!("1 :  矿池 -> 矿机 {} #{:?}",worker_name, buffer);
+                debug!("1 : mining pool -> mining machine {} #{:?}",worker_name, buffer);
                 if let Ok(job_rpc) = serde_json::from_str::<EthServerRootObject>(&buffer) {
                     let job_res = job_rpc.get_job_result().unwrap();
             {
@@ -251,7 +251,7 @@ pub async fn fee_tcp(
             }
                 } else if let Ok(result_rpc) = serde_json::from_str::<EthServer>(&buffer) {
                     if result_rpc.result == false {
-                        tracing::debug!(worker_name = ?worker_name,rpc = ?buffer,"线程获得操作结果 {:?}",result_rpc.result);
+                        tracing::debug!(worker_name = ?worker_name,rpc = ?buffer,"Thread gets operation result {:?}",result_rpc.result);
                     }
                 }
             },
@@ -298,7 +298,7 @@ where
 
     let (_, _) = tokio::join!(worker_write, worker_reader);
 
-    return Err(anyhow!("异常退出了"));
+    return Err(anyhow!("exited abnormally"));
 }
 
 async fn async_write<W>(
@@ -348,14 +348,14 @@ where
     loop {
         select! {
             res = proxy_lines.next_line() => {
-                let buffer = match lines_unwrap(res,&worker_name,"矿池").await {
+                let buffer = match lines_unwrap(res,&worker_name,"mining pool").await {
                     Ok(buf) => buf,
                     Err(_) => {
-                        return Err(anyhow!("抽水旷工掉线了a"));
+                        return Err(anyhow!("Pumping absenteeism dropped the line a"));
                     },
                 };
                 #[cfg(debug_assertions)]
-                debug!("1 :  矿池 -> 矿机 {} #{:?}",worker_name, buffer);
+                debug!("1 : mining pool -> mining machine {} #{:?}",worker_name, buffer);
                 if let Ok(job_rpc) = serde_json::from_str::<EthServerRootObject>(&buffer) {
                     let job_res = job_rpc.get_job_result().unwrap();
             {
@@ -364,7 +364,7 @@ where
             }
                 } else if let Ok(result_rpc) = serde_json::from_str::<EthServer>(&buffer) {
                     if result_rpc.result == false {
-                        tracing::debug!(worker_name = ?worker_name,rpc = ?buffer,"线程获得操作结果 {:?}",result_rpc.result);
+                        tracing::debug!(worker_name = ?worker_name,rpc = ?buffer,"Thread gets operation result {:?}",result_rpc.result);
                     }
                 }
             }
@@ -406,26 +406,26 @@ where
 //         select! {
 //             res = proxy_lines.next_line() => {
 //                 let buffer = match
-// 		    lines_unwrap(res,&worker_name,"矿池").await {                     Ok(buf)
+// 		    lines_unwrap(res,&worker_name,"mining pool").await {                     Ok(buf)
 // => 										      buf,                     Err(e) => {
 
 // 											  info!(worker_name =
-// 												?worker_name,"退出了。重新登录到池!!");                         let
+// 												?worker_name,"quit. Log back into the pool!!");                         let
 // 											      (new_lines, dev_w) = crate::client::proxy_pool_login_with_ssl(
 // 												  &config,                             config.share_name.clone(),
 // 											      ).await?;
 
-// 											  //同时加2个值
+// 											  //Add 2 values at the same time
 // 											  w = dev_w;
 // 											  proxy_lines = new_lines;
-// 											  info!(worker_name = ?worker_name,"重新登录成功!!");
+// 											  info!(worker_name = ?worker_name,"Re-login successful!!");
 
 // 											  continue;
 // 										      },
 //                     };
 
 //                 #[cfg(debug_assertions)]
-//                 debug!("1 :  矿池 -> 矿机 {} #{:?}",worker_name, buffer);
+//                 debug!("1 : mining pool -> mining machine {} #{:?}",worker_name, buffer);
 
 //                 let buffer: Vec<_> = buffer.split("\n").collect();
 //                 for buf in buffer {
@@ -440,7 +440,7 @@ where
 // 			serde_json::from_str::<EthServer>(&buf) {                         if
 // 											  result_rpc.result == false {
 // 											      tracing::debug!(worker_name = ?worker_name,rpc = ?buf,"
-// 线程获得操作结果 {:?}",result_rpc.result);                         }
+// The thread gets the result of the operation {:?}",result_rpc.result);                         }
 // 			}
 //                 }
 //             },
@@ -448,7 +448,7 @@ where
 //                 share_job_idx+=1;
 //                 job_rpc.set_id(share_job_idx);
 //                 //tracing::debug!(worker_name = ?worker_name,rpc =
-// 		?job_rpc,id=share_job_idx," 获得抽水工作份额");
+// 		?job_rpc,id=share_job_idx," Get Pumped Job Shares");
 // 	    write_to_socket_byte(&mut w, job_rpc.to_vec()?, &worker_name).await?
 //         },
 //         () = &mut sleep  => {
@@ -479,26 +479,26 @@ where
 //         select! {
 //             res = proxy_lines.next_line() => {
 //                 let buffer = match
-// lines_unwrap(res,&worker_name,"矿池").await{                     Ok(buf) =>
+// lines_unwrap(res,&worker_name,"mining pool").await{                     Ok(buf) =>
 // buf,                     Err(e) => {
 
 //                         info!(worker_name =
-// ?worker_name,"退出了。重新登录到池!!");                         let
+// ?worker_name,"quit. Log back into the pool!!");                         let
 // (new_lines, dev_w) = crate::client::proxy_pool_login(
 // &config,                             config.share_name.clone(),
 //                         ).await?;
 
-//                         //同时加2个值
+//                         //Add 2 values at the same time
 //                         w = dev_w;
 //                         proxy_lines = new_lines;
-//                         info!(worker_name = ?worker_name,"重新登录成功!!");
+//                         info!(worker_name = ?worker_name,"Re-login successful!!");
 
 //                         continue;
 //                     },
 //                 };
 
 //                 #[cfg(debug_assertions)]
-//                 debug!("1 :  矿池 -> 矿机 {} #{:?}",worker_name, buffer);
+//                 debug!("1 : mining pool -> mining machine {} #{:?}",worker_name, buffer);
 
 //                 let buffer: Vec<_> = buffer.split("\n").collect();
 //                 for buf in buffer {
@@ -512,7 +512,7 @@ where
 // chan.send(job_res)?;                     } else if let Ok(result_rpc) =
 // serde_json::from_str::<EthServer>(&buf) {                         if
 // result_rpc.result == false {
-// tracing::debug!(worker_name = ?worker_name,rpc = ?buf," 线程获得操作结果
+// tracing::debug!(worker_name = ?worker_name,rpc = ?buf," The thread gets the result of the operation
 // {:?}",result_rpc.result);                         }
 //                     }
 //                 }

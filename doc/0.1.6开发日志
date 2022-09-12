@@ -1,4 +1,4 @@
-## 完成
-- 1. 优化线程
-- 2. 给任务去重。不然算力计算都是重复的还有可能重复提交。
-- 3. 新增任务缓存为LRU算法。
+## Finish
+- 1. Optimize threads
+- 2. Deduplicate tasks. Otherwise, the calculation of computing power will be repeated and there may be repeated submissions.
+- 3. Added task cache as LRU algorithm.

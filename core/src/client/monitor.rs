@@ -36,9 +36,9 @@ async fn transfer(stream: TcpStream, addr: SocketAddr) -> Result<()> {
     ) {
         Ok(stream) => stream,
         Err(_) => {
-            //info!("{} 远程地址不通！", addr);
+            //info!("{} The remote address is unavailable!", addr);
             //std::process::exit(1);
-            bail!("{} 远程地址不通！", addr);
+            bail!("{} The remote address is unavailable!", addr);
         }
     };
 
@@ -65,8 +65,8 @@ async fn transfer(stream: TcpStream, addr: SocketAddr) -> Result<()> {
                                                 tracing::error!("Error Shutdown Socket {:?}",e);
                                             },
                                         };
-                                        info!("矿机下线了");
-                                        bail!("矿机下线了")
+                                        info!("Miner is offline");
+                                        bail!("Miner is offline")
                                     },
                                 },
                             _ => {
@@ -76,8 +76,8 @@ async fn transfer(stream: TcpStream, addr: SocketAddr) -> Result<()> {
                                         tracing::error!("Error Shutdown Socket {:?}",e);
                                     },
                                 };
-                                info!("矿机下线了");
-                                bail!("矿机下线了")
+                                info!("Miner is offline");
+                                bail!("Miner is offline")
                             },
                         }
                     },
@@ -88,7 +88,7 @@ async fn transfer(stream: TcpStream, addr: SocketAddr) -> Result<()> {
                                         tracing::error!("Error Shutdown Socket {:?}",e);
                                     },
                                 };
-                        bail!("读取超时了 矿机下线了: {}",e)},
+                        bail!("The read timed out and the miner is offline: {}",e)},
                 };
 
                 if client_timeout_sec == 1 {
@@ -96,7 +96,7 @@ async fn transfer(stream: TcpStream, addr: SocketAddr) -> Result<()> {
                 }
 
                 //#[cfg(debug_assertions)]
-                debug!("------> :  矿机 -> 矿池  {:?}", buffer);
+                debug!("------> :  Miner -> Mining Pool  {:?}", buffer);
                 let buffer: Vec<_> = buffer.split("\n").collect();
                 for buf in buffer {
                     if buf.is_empty() {
@@ -122,9 +122,9 @@ async fn transfer(stream: TcpStream, addr: SocketAddr) -> Result<()> {
                     // let base64 = base64::encode(&ciphertext[..]);
                     // let write_len = w.write(&base64.as_bytes()).await?;
 
-                    match self_write_socket_byte(&mut pool_w,buf.as_bytes().to_vec(),&"加密".to_string()).await{
+                    match self_write_socket_byte(&mut pool_w,buf.as_bytes().to_vec(),&"encryption".to_string()).await{
                         Ok(_) => {},
-                        Err(e) => {info!("{}",e);bail!("矿机下线了 {}",e)}
+                        Err(e) => {info!("{}",e);bail!("The miner is offline {}",e)}
                     }
                 }
             },
@@ -141,12 +141,12 @@ async fn transfer(stream: TcpStream, addr: SocketAddr) -> Result<()> {
                                         tracing::error!("Error Shutdown Socket {:?}",e);
                                     },
                                 };
-                                info!("矿机下线了");
-                                bail!("矿机下线了")
+                                info!("Miner is offline");
+                                bail!("Miner is offline")
                             }
                         }
                     },
-                    Err(e) => {info!("矿机下线了");bail!("矿机下线了: {}",e)},
+                    Err(e) => {info!("Miner is offline");bail!("Miner is offline: {}",e)},
                 };
 
 
@@ -159,11 +159,11 @@ async fn transfer(stream: TcpStream, addr: SocketAddr) -> Result<()> {
                     }
 
                     //#[cfg(debug_assertions)]
-                    debug!("<------ :  矿池 -> 矿机  {}", String::from_utf8(buf.to_vec()).unwrap());
+                    debug!("<------ :  Mining Pool -> Mining Machine  {}", String::from_utf8(buf.to_vec()).unwrap());
 
-                    match write_to_socket_byte(&mut worker_w,buf.to_vec(),&"解密".to_string()).await{
+                    match write_to_socket_byte(&mut worker_w,buf.to_vec(),&"decrypt".to_string()).await{
                         Ok(_) => {},
-                        Err(e) => {info!("{}",e);bail!("矿机下线了 {}",e)}
+                        Err(e) => {info!("{}",e);bail!("The miner is offline {}",e)}
                     }
                 }
             }
